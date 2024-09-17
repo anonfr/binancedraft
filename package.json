@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "postinstall": "npm rebuild rollup",
-    "vercel-build": "./vercel-build.sh"
+    "vercel-build": "vite build"
   },
   "dependencies": {
     "@tonconnect/sdk": "^3.0.5",
