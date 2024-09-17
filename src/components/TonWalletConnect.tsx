@@ -1,44 +1,40 @@
-import React, { useState, useEffect } from 'react';
-
-declare global {
-  interface Window {
-    Telegram?: {
-      WebApp?: {
-        ready(): void;
-        initData: string;
-        sendData(data: string): void;
-        openTonWallet(params: { url: string }): void;
-      };
-    };
-  }
-}
+import React from 'react';
+import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
 
 const TonWalletConnect: React.FC = () => {
-  const [tonWallet] = useState<string | null>(null);
+  const [tonConnectUI] = useTonConnectUI();
 
-  useEffect(() => {
-    if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.ready();
+  const handleSendTransaction = async () => {
+    if (!tonConnectUI.connected) {
+      console.log('Please connect your wallet first');
+      return;
     }
-  }, []);
 
-  const connectTonWallet = async () => {
-    if (window.Telegram?.WebApp) {
-      // This is a placeholder. You'll need to implement the actual connection logic
-      // using Telegram's API. This might involve opening the TON wallet and waiting for a callback.
-      window.Telegram.WebApp.openTonWallet({ url: 'ton://transfer/...' });
-      // You'll need to handle the response and update the state accordingly
-    } else {
-      console.log('Telegram WebApp is not available');
+    const transaction = {
+      validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes from now
+      messages: [
+        {
+          address: "0:412410771DA82CBA306A55FA9E0D43C9D245E38133CB58F1457DFB8D5CD8892F",
+          amount: "20000000"
+        }
+      ]
+    };
+
+    try {
+      await tonConnectUI.sendTransaction(transaction);
+      console.log('Transaction sent successfully');
+    } catch (error) {
+      console.error('Transaction failed:', error);
     }
   };
 
   return (
     <div>
-      {tonWallet ? (
-        <p>Connected TON Wallet: {tonWallet}</p>
-      ) : (
-        <button onClick={connectTonWallet}>Connect TON Wallet</button>
+      <TonConnectButton />
+      {tonConnectUI.connected && (
+        <button onClick={handleSendTransaction} style={{ marginTop: '10px' }}>
+          Send Test Transaction
+        </button>
       )}
     </div>
   );
