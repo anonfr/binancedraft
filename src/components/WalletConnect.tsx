@@ -23,7 +23,7 @@ const WalletConnect: React.FC = () => {
       {walletAddress ? (
         <p>Connected Wallet: {walletAddress}</p>
       ) : (
-        <button onClick={connectWallet}>Connect Wallet</button>
+        <button onClick={connectWallet}>Connect Web3 Wallet</button>
       )}
     </div>
   );
