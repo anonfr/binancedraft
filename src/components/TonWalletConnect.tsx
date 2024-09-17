@@ -1,42 +1,35 @@
 import React from 'react';
-import { TonConnectButton, useTonConnectUI } from '@tonconnect/ui-react';
+
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp?: {
+        ready(): void;
+        sendData(data: string): void;
+        openTonWallet(params: { url: string }): void;
+      };
+    };
+  }
+}
 
 const TonWalletConnect: React.FC = () => {
-  const [tonConnectUI] = useTonConnectUI();
-
-  const handleSendTransaction = async () => {
-    if (!tonConnectUI.connected) {
-      console.log('Please connect your wallet first');
-      return;
+  React.useEffect(() => {
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.ready();
     }
+  }, []);
 
-    const transaction = {
-      validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes from now
-      messages: [
-        {
-          address: "0:412410771DA82CBA306A55FA9E0D43C9D245E38133CB58F1457DFB8D5CD8892F",
-          amount: "20000000"
-        }
-      ]
-    };
-
-    try {
-      await tonConnectUI.sendTransaction(transaction);
-      console.log('Transaction sent successfully');
-    } catch (error) {
-      console.error('Transaction failed:', error);
+  const handleConnect = () => {
+    if (window.Telegram?.WebApp) {
+      // This is a placeholder URL. You'll need to replace it with your actual TON transfer URL
+      window.Telegram.WebApp.openTonWallet({ url: 'ton://transfer/...' });
+    } else {
+      console.log('Telegram WebApp is not available');
     }
   };
 
   return (
-    <div>
-      <TonConnectButton />
-      {tonConnectUI.connected && (
-        <button onClick={handleSendTransaction} style={{ marginTop: '10px' }}>
-          Send Test Transaction
-        </button>
-      )}
-    </div>
+    <button onClick={handleConnect}>Connect TON Wallet</button>
   );
 };
 
