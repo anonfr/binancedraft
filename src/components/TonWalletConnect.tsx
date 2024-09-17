@@ -2,39 +2,34 @@ import React, { useState, useEffect } from 'react';
 
 declare global {
   interface Window {
-    ton?: any;
+    Telegram?: {
+      WebApp?: {
+        ready(): void;
+        initData: string;
+        sendData(data: string): void;
+        openTonWallet(params: { url: string }): void;
+      };
+    };
   }
 }
 
 const TonWalletConnect: React.FC = () => {
-  const [tonWallet, setTonWallet] = useState<string | null>(null);
+  const [tonWallet] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkTonWallet = async () => {
-      if (typeof window.ton !== 'undefined') {
-        try {
-          const accounts = await window.ton.send('ton_requestAccounts');
-          setTonWallet(accounts[0]);
-        } catch (error) {
-          console.error('Failed to connect TON wallet:', error);
-        }
-      }
-    };
-
-    checkTonWallet();
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.ready();
+    }
   }, []);
 
   const connectTonWallet = async () => {
-    if (typeof window.ton !== 'undefined') {
-      try {
-        const accounts = await window.ton.send('ton_requestAccounts');
-        setTonWallet(accounts[0]);
-        console.log('Connected to TON wallet:', accounts[0]);
-      } catch (error) {
-        console.error('Failed to connect TON wallet:', error);
-      }
+    if (window.Telegram?.WebApp) {
+      // This is a placeholder. You'll need to implement the actual connection logic
+      // using Telegram's API. This might involve opening the TON wallet and waiting for a callback.
+      window.Telegram.WebApp.openTonWallet({ url: 'ton://transfer/...' });
+      // You'll need to handle the response and update the state accordingly
     } else {
-      console.log('Please install a TON wallet extension!');
+      console.log('Telegram WebApp is not available');
     }
   };
 
