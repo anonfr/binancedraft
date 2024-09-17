@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import WalletConnect from './components/WalletConnect'
+import TonWalletConnect from './components/TonWalletConnect'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,7 +23,12 @@ function App() {
           AnonfrXBT was here
         </p>
       </div>
-      <WalletConnect />
+      <div style={{ marginBottom: '20px' }}>
+        <TonWalletConnect />
+      </div>
+      <div>
+        <WalletConnect />
+      </div>
       <p className="read-the-docs">
         developing...
       </p>
